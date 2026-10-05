@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f3ed">
+    <meta name="description" content="Agenda participativa de clase con eventos compartidos y asistente de chat.">
+    <title>Entreclase | Agenda del curso</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="Entreclase, inicio">
+        <span class="brand-mark" aria-hidden="true">e.</span>
+        <span>entreclase<span class="brand-period">.</span></span>
+      </a>
+      <div class="topbar-tools">
+        <span class="course-label"><span class="course-dot" aria-hidden="true"></span> Curso compartido</span>
+        <label class="role-control" for="role-select">Participas como
+          <select id="role-select" aria-label="Rol de usuario">
+            <option>Estudiante</option>
+            <option>Docente</option>
+            <option>Delegado/a</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <main id="inicio" class="workspace">
+      <section class="agenda" aria-labelledby="agenda-title">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow"><span id="today-label"></span><span class="eyebrow-divider">/</span> AGENDA DEL CURSO</p>
+            <h1 id="agenda-title">Lo que tenemos <em>por delante.</em></h1>
+            <p class="intro">Fechas, avisos y entregas en un mismo lugar. Añade algo para que nadie se lo pierda.</p>
+          </div>
+          <button class="button button-primary add-event" id="open-dialog" type="button">
+            <span aria-hidden="true">＋</span> Añadir evento
+          </button>
+        </div>
+
+        <section class="next-up" aria-label="Resumen de próximos eventos">
+          <div class="next-up-icon" aria-hidden="true">↗</div>
+          <div class="next-up-copy"><span class="summary-label">PRÓXIMO EN LA AGENDA</span><strong id="next-event-title">Cargando agenda…</strong></div>
+          <span class="next-up-date" id="next-event-date"></span>
+        </section>
+
+        <div class="agenda-toolbar">
+          <div class="filter-list" role="group" aria-label="Filtrar eventos">
+            <button class="filter-button is-active" type="button" data-filter="todos" aria-pressed="true">Todos <span id="all-count">0</span></button>
+            <button class="filter-button" type="button" data-filter="examen" aria-pressed="false"><span class="filter-dot dot-exam"></span>Exámenes</button>
+            <button class="filter-button" type="button" data-filter="aviso" aria-pressed="false"><span class="filter-dot dot-notice"></span>Avisos</button>
+            <button class="filter-button" type="button" data-filter="entrega" aria-pressed="false"><span class="filter-dot dot-task"></span>Entregas</button>
+          </div>
+          <span class="event-count" id="event-count" aria-live="polite"></span>
+        </div>
+
+        <div class="event-grid" id="event-grid" aria-live="polite"></div>
+      </section>
+
+      <aside class="chat-panel" aria-labelledby="chat-title">
+        <div class="chat-header">
+          <div class="chat-avatar" aria-hidden="true"><span>✳</span></div>
+          <div class="chat-heading"><h2 id="chat-title">Nora</h2><span><i class="online-dot"></i> En línea</span></div>
+          <span class="chat-header-mark" aria-hidden="true">AI</span>
+        </div>
+        <div class="chat-context"><span class="context-icon" aria-hidden="true">⌕</span><span>Tu asistente para organizar el curso</span></div>
+        <div class="chat-messages" id="chat-messages" role="log" aria-label="Conversación con Nora" aria-live="polite" aria-relevant="additions"></div>
+        <div class="chat-prompts" aria-label="Consultas sugeridas">
+          <button type="button" data-prompt="¿Qué exámenes tenemos?">Exámenes</button>
+          <button type="button" data-prompt="¿Hay entregas próximas?">Entregas</button>
+        </div>
+        <form class="chat-form" id="chat-form">
+          <label class="visually-hidden" for="chat-input">Escribe tu consulta</label>
+          <input id="chat-input" name="message" type="text" placeholder="Pregunta por una fecha…" autocomplete="off" maxlength="240" required>
+          <button class="send-button" type="submit" aria-label="Enviar mensaje" title="Enviar mensaje"><span aria-hidden="true">↑</span></button>
+        </form>
+        <p class="chat-footnote">Respuestas basadas en la agenda de este dispositivo</p>
+      </aside>
+    </main>
+
+    <footer class="page-footer"><span>ENTRECLASE <span class="footer-separator">/</span> AGENDA PARTICIPATIVA</span><span id="footer-event-total">0 eventos guardados</span></footer>
+
+    <dialog class="event-dialog" id="event-dialog" aria-labelledby="dialog-title">
+      <form id="event-form" method="dialog">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">AGENDA COMPARTIDA</p><h2 id="dialog-title">Nuevo evento</h2></div>
+          <button class="icon-button" id="close-dialog" type="button" aria-label="Cerrar formulario">×</button>
+        </div>
+        <input id="event-id" name="id" type="hidden">
+        <label class="field-label" for="event-title">Título o materia</label>
+        <input class="form-input" id="event-title" name="title" type="text" placeholder="Ej. Historia · Revolución industrial" maxlength="90" required>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="field-label" for="event-type">Categoría</label>
+            <select class="form-input" id="event-type" name="type" required>
+              <option value="examen">Examen</option>
+              <option value="aviso">Aviso docente</option>
+              <option value="entrega">Entrega</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label class="field-label" for="event-date">Fecha</label>
+            <input class="form-input" id="event-date" name="date" type="date" required>
+          </div>
+        </div>
+        <label class="field-label" for="event-desc">Detalles <span class="optional-label">OPCIONAL</span></label>
+        <textarea class="form-input form-textarea" id="event-desc" name="desc" rows="3" maxlength="400" placeholder="Aula, materiales, páginas…"></textarea>
+        <p class="form-author-note">Se publicará como <strong id="author-preview">Estudiante</strong>.</p>
+        <div class="dialog-actions">
+          <button class="button button-quiet" id="cancel-dialog" type="button">Cancelar</button>
+          <button class="button button-primary" id="save-event" type="submit">Guardar evento <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
