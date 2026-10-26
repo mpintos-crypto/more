@@ -253,7 +253,7 @@ function appendMessage(text, sender) {
 function appendTypingIndicator() {
   const indicator = document.createElement('div');
   indicator.className = 'message bot';
-  indicator.setAttribute('aria-label', 'Nora está escribiendo');
+  indicator.setAttribute('aria-label', 'more está escribiendo');
   const dots = document.createElement('span');
   dots.className = 'typing';
   dots.innerHTML = '<i></i><i></i><i></i>';
@@ -320,7 +320,7 @@ function handleChatSubmit(submitEvent) {
 }
 
 function addChatGreeting() {
-  const greeting = '¡Hola! Soy Nora. Puedo buscar en la agenda. Pregúntame por exámenes, parciales, avisos o entregas.';
+  const greeting = '¡Hola! Soy more. Puedo buscar en la agenda. Pregúntame por exámenes, parciales, avisos o entregas.';
   appendMessage(greeting, 'bot');
 }
 
