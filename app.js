@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'entreclase.events.v1';
+const CLASS_STORAGE_KEY = 'entreclase.classes.v1';
 const ROLE_KEY = 'entreclase.role.v1';
 
 const eventGrid = document.querySelector('#event-grid');
@@ -7,7 +8,19 @@ const eventForm = document.querySelector('#event-form');
 const chatMessages = document.querySelector('#chat-messages');
 const chatForm = document.querySelector('#chat-form');
 const chatInput = document.querySelector('#chat-input');
+const chatComposer = document.querySelector('.chat-composer');
+const emojiToggle = document.querySelector('#emoji-toggle');
+const emojiPicker = document.querySelector('#emoji-picker');
+const emojiStatus = document.querySelector('#emoji-status');
 const roleSelect = document.querySelector('#role-select');
+const dashboardView = document.querySelector('#dashboard-view');
+const classesView = document.querySelector('#classes-view');
+const classGrid = document.querySelector('#class-grid');
+const classDialog = document.querySelector('#class-dialog');
+const classForm = document.querySelector('#class-form');
+const classNameInput = document.querySelector('#class-name');
+const workspace = document.querySelector('#inicio');
+const topbarPageLabel = document.querySelector('#topbar-page-label');
 const eventTypeLabels = {
   examen: { label: 'Examen', icon: '✎' },
   aviso: { label: 'Aviso docente', icon: '◉' },
@@ -15,6 +28,7 @@ const eventTypeLabels = {
 };
 
 let events = loadEvents();
+let classes = loadClasses();
 let activeFilter = 'todos';
 let nextReplyId = 0;
 let nextReplyToRender = 0;
@@ -46,6 +60,196 @@ function saveEvents(nextEvents) {
     console.error('No se pudo guardar la agenda en este navegador.', error);
     return false;
   }
+}
+
+function loadClasses() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CLASS_STORAGE_KEY) || '[]');
+    if (Array.isArray(saved)) return saved.filter(isValidClass);
+    console.warn('Los datos guardados de las clases no tienen un formato válido.');
+  } catch (error) {
+    console.warn('No se pudieron leer las clases guardadas.', error);
+  }
+  return [];
+}
+
+function isValidClass(course) {
+  return course && typeof course.id === 'string' && typeof course.name === 'string'
+    && typeof course.subject === 'string' && typeof course.teacher === 'string';
+}
+
+function saveClasses(nextClasses) {
+  try {
+    localStorage.setItem(CLASS_STORAGE_KEY, JSON.stringify(nextClasses));
+    return true;
+  } catch (error) {
+    console.error('No se pudieron guardar las clases en este navegador.', error);
+    return false;
+  }
+}
+
+function renderClasses() {
+  classGrid.replaceChildren();
+  document.querySelector('#class-count').textContent = `${classes.length} ${classes.length === 1 ? 'clase' : 'clases'}`;
+
+  if (classes.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'class-empty';
+    const icon = document.createElement('span');
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = '▣';
+    const title = document.createElement('strong');
+    title.textContent = 'Todavía no tienes clases';
+    const detail = document.createElement('p');
+    detail.textContent = 'Crea una clase para tenerla siempre a mano. Seguirá aquí aunque aún no tenga avisos.';
+    const createButton = document.createElement('button');
+    createButton.className = 'class-add-button';
+    createButton.type = 'button';
+    createButton.dataset.classAction = 'create';
+    createButton.innerHTML = '<span aria-hidden="true">＋</span> Crear primera clase';
+    empty.append(icon, title, detail, createButton);
+    classGrid.append(empty);
+    return;
+  }
+
+  classes.forEach((course) => {
+    const card = document.createElement('article');
+    card.className = 'class-card';
+
+    const cover = document.createElement('div');
+    cover.className = 'class-card-cover';
+    const heading = document.createElement('div');
+    const title = document.createElement('h2');
+    title.textContent = course.name;
+    heading.append(title);
+    if (course.subject) {
+      const subject = document.createElement('p');
+      subject.textContent = course.subject;
+      heading.append(subject);
+    }
+    const mark = document.createElement('span');
+    mark.className = 'class-card-mark';
+    mark.setAttribute('aria-hidden', 'true');
+    mark.textContent = '▣';
+    cover.append(heading, mark);
+
+    const details = document.createElement('div');
+    details.className = 'class-card-details';
+    const teacherMark = document.createElement('span');
+    teacherMark.className = 'class-teacher-mark';
+    teacherMark.setAttribute('aria-hidden', 'true');
+    teacherMark.textContent = '◉';
+    const teacher = document.createElement('span');
+    teacher.textContent = course.teacher || 'Docente sin asignar';
+    details.append(teacherMark, teacher);
+
+    const announcement = document.createElement('div');
+    announcement.className = 'class-no-announcements';
+    const announcementIcon = document.createElement('span');
+    announcementIcon.setAttribute('aria-hidden', 'true');
+    announcementIcon.textContent = '◌';
+    const announcementCopy = document.createElement('div');
+    const announcementTitle = document.createElement('strong');
+    announcementTitle.textContent = 'Sin avisos todavía';
+    const announcementDescription = document.createElement('p');
+    announcementDescription.textContent = 'La clase permanece en tu lista aunque no haya novedades.';
+    announcementCopy.append(announcementTitle, announcementDescription);
+    announcement.append(announcementIcon, announcementCopy);
+
+    const actions = document.createElement('div');
+    actions.className = 'class-card-actions';
+    actions.append(
+      createClassActionButton('Editar clase', '↗', 'edit', course.id),
+      createClassActionButton('Eliminar clase', '×', 'delete', course.id)
+    );
+    card.append(cover, details, announcement, actions);
+    classGrid.append(card);
+  });
+}
+
+function createClassActionButton(label, icon, action, id) {
+  const button = document.createElement('button');
+  button.className = `event-action${action === 'delete' ? ' delete' : ''}`;
+  button.type = 'button';
+  button.dataset.classAction = action;
+  button.dataset.id = id;
+  button.setAttribute('aria-label', label);
+  button.title = label;
+  button.textContent = icon;
+  return button;
+}
+
+function openCreateClassDialog() {
+  classForm.reset();
+  document.querySelector('#class-id').value = '';
+  document.querySelector('#class-dialog-title').textContent = 'Crear clase';
+  document.querySelector('#save-class').innerHTML = 'Guardar clase <span aria-hidden="true">→</span>';
+  classDialog.showModal();
+  classNameInput.focus();
+}
+
+function openEditClassDialog(id) {
+  const course = classes.find((item) => item.id === id);
+  if (!course) return;
+  document.querySelector('#class-id').value = course.id;
+  classNameInput.value = course.name;
+  document.querySelector('#class-subject').value = course.subject;
+  document.querySelector('#class-teacher').value = course.teacher;
+  document.querySelector('#class-dialog-title').textContent = 'Editar clase';
+  document.querySelector('#save-class').innerHTML = 'Guardar cambios <span aria-hidden="true">→</span>';
+  classDialog.showModal();
+  classNameInput.focus();
+}
+
+function handleClassSubmit(submitEvent) {
+  submitEvent.preventDefault();
+  if (!classForm.reportValidity()) return;
+
+  const formData = new FormData(classForm);
+  const id = String(formData.get('id') || '');
+  const existing = classes.find((course) => course.id === id);
+  const name = String(formData.get('name') || '').trim();
+  if (!name) {
+    classNameInput.setCustomValidity('Escribe el nombre de la clase.');
+    classNameInput.reportValidity();
+    classNameInput.setCustomValidity('');
+    return;
+  }
+
+  const nextClass = {
+    id: existing ? existing.id : createId(),
+    name,
+    subject: String(formData.get('subject') || '').trim(),
+    teacher: String(formData.get('teacher') || '').trim()
+  };
+  const nextClasses = existing
+    ? classes.map((course) => course.id === id ? nextClass : course)
+    : [...classes, nextClass];
+  if (!saveClasses(nextClasses)) return;
+  classes = nextClasses;
+  renderClasses();
+  classDialog.close();
+}
+
+function handleClassAction(clickEvent) {
+  const button = clickEvent.target.closest('button[data-class-action]');
+  if (!button) return;
+  if (button.dataset.classAction === 'create') {
+    openCreateClassDialog();
+    return;
+  }
+  if (button.dataset.classAction === 'edit') {
+    openEditClassDialog(button.dataset.id);
+    return;
+  }
+  if (button.dataset.classAction !== 'delete') return;
+
+  const course = classes.find((item) => item.id === button.dataset.id);
+  if (!course || !window.confirm(`¿Eliminar la clase “${course.name}”?`)) return;
+  const nextClasses = classes.filter((item) => item.id !== course.id);
+  if (!saveClasses(nextClasses)) return;
+  classes = nextClasses;
+  renderClasses();
 }
 
 function createExampleEvents() {
@@ -296,10 +500,32 @@ function buildBotReply(message) {
   return formatUpcomingEvents(matching, requestedTypes.size > 0);
 }
 
+function setEmojiPickerOpen(isOpen) {
+  emojiPicker.hidden = !isOpen;
+  emojiToggle.setAttribute('aria-expanded', String(isOpen));
+  if (isOpen) emojiStatus.textContent = '';
+}
+
+function insertEmoji(button) {
+  const emoji = button.textContent;
+  const selectionStart = chatInput.selectionStart ?? chatInput.value.length;
+  const selectionEnd = chatInput.selectionEnd ?? selectionStart;
+  const nextLength = chatInput.value.length - (selectionEnd - selectionStart) + emoji.length;
+  if (nextLength > chatInput.maxLength) {
+    emojiStatus.textContent = `El mensaje alcanzó el límite de ${chatInput.maxLength} caracteres.`;
+    return;
+  }
+
+  chatInput.setRangeText(emoji, selectionStart, selectionEnd, 'end');
+  chatInput.focus();
+  emojiStatus.textContent = `${button.getAttribute('aria-label')} agregado.`;
+}
+
 function handleChatSubmit(submitEvent) {
   submitEvent.preventDefault();
   const message = chatInput.value.trim();
   if (!message) return;
+  setEmojiPickerOpen(false);
   appendMessage(message, 'user');
   chatInput.value = '';
   chatInput.focus();
@@ -324,6 +550,35 @@ function addChatGreeting() {
   appendMessage(greeting, 'bot');
 }
 
+function navigateToView(viewName) {
+  const isDashboard = viewName === 'dashboard';
+  const isClasses = viewName === 'classes';
+  dashboardView.hidden = !isDashboard;
+  classesView.hidden = !isClasses;
+  workspace.hidden = isDashboard || isClasses;
+  document.body.classList.toggle('dashboard-mode', isDashboard || isClasses);
+  topbarPageLabel.textContent = isDashboard ? 'Dashboard' : isClasses ? 'Mis clases' : 'Agenda del curso';
+  document.querySelectorAll('.nav-item').forEach((button) => {
+    const isActive = button.dataset.view === viewName;
+    button.classList.toggle('is-active', isActive);
+    if (isActive) button.setAttribute('aria-current', 'page');
+    else button.removeAttribute('aria-current');
+  });
+}
+
+function openDashboardAgenda() {
+  navigateToView('agenda');
+}
+
+function openClassesView() {
+  navigateToView('classes');
+}
+
+function openDashboardChat() {
+  navigateToView('agenda');
+  chatInput.focus();
+}
+
 function initialize() {
   try {
     const savedRole = localStorage.getItem(ROLE_KEY);
@@ -333,12 +588,58 @@ function initialize() {
   }
 
   document.querySelector('#today-label').textContent = new Intl.DateTimeFormat('es', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date()).toUpperCase();
+  document.querySelector('#dashboard-date').textContent = new Intl.DateTimeFormat('es', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date());
+  document.querySelectorAll('.nav-item').forEach((button) => {
+    button.addEventListener('click', () => navigateToView(button.dataset.view));
+  });
+  document.querySelector('.app-sidebar .brand').addEventListener('click', (clickEvent) => {
+    clickEvent.preventDefault();
+    openDashboardAgenda();
+  });
+  document.querySelector('#dashboard-new-event').addEventListener('click', () => {
+    openDashboardAgenda();
+    openCreateDialog();
+  });
+  document.querySelector('#dashboard-banner-action').addEventListener('click', () => {
+    openDashboardAgenda();
+    openCreateDialog();
+  });
+  document.querySelector('#dashboard-open-chat').addEventListener('click', openDashboardChat);
+  document.querySelector('#dashboard-banner-agenda').addEventListener('click', openDashboardAgenda);
+  document.querySelector('#dashboard-resources-agenda').addEventListener('click', openDashboardAgenda);
+  document.querySelector('#resource-agenda').addEventListener('click', openDashboardAgenda);
+  document.querySelector('#resource-chat').addEventListener('click', openDashboardChat);
+  document.querySelector('#resource-classes').addEventListener('click', openClassesView);
+  document.querySelector('#open-class-dialog').addEventListener('click', openCreateClassDialog);
+  document.querySelector('#close-class-dialog').addEventListener('click', () => classDialog.close());
+  document.querySelector('#cancel-class-dialog').addEventListener('click', () => classDialog.close());
+  classForm.addEventListener('submit', handleClassSubmit);
+  classGrid.addEventListener('click', handleClassAction);
   document.querySelector('#open-dialog').addEventListener('click', openCreateDialog);
   document.querySelector('#close-dialog').addEventListener('click', () => eventDialog.close());
   document.querySelector('#cancel-dialog').addEventListener('click', () => eventDialog.close());
   eventForm.addEventListener('submit', handleEventSubmit);
   eventGrid.addEventListener('click', handleEventAction);
   chatForm.addEventListener('submit', handleChatSubmit);
+  emojiToggle.addEventListener('click', () => {
+    setEmojiPickerOpen(emojiPicker.hidden);
+  });
+  emojiPicker.addEventListener('click', (clickEvent) => {
+    const button = clickEvent.target.closest('button');
+    if (button) insertEmoji(button);
+  });
+  chatComposer.addEventListener('keydown', (keyEvent) => {
+    if (keyEvent.key === 'Escape') {
+      setEmojiPickerOpen(false);
+      emojiToggle.focus();
+    }
+  });
+  chatInput.addEventListener('input', () => {
+    emojiStatus.textContent = '';
+  });
+  document.addEventListener('click', (clickEvent) => {
+    if (!clickEvent.target.closest('.chat-composer')) setEmojiPickerOpen(false);
+  });
   roleSelect.addEventListener('change', () => {
     updateAuthorPreview();
     try { localStorage.setItem(ROLE_KEY, roleSelect.value); } catch (error) { console.warn('No se pudo guardar el rol.', error); }
@@ -362,6 +663,7 @@ function initialize() {
   });
 
   renderEvents();
+  renderClasses();
   addChatGreeting();
 }
 

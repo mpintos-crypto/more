@@ -4,9 +4,10 @@ Agenda participativa de clase hecha con HTML, CSS y JavaScript vanilla. No requi
 
 ## Uso
 
+- Usa la navegación lateral para alternar entre la agenda, el dashboard administrativo y tus clases. Puedes crear, editar y eliminar clases; se conservan aunque todavía no tengan avisos y se guardan en este dispositivo.
 - Elige un rol y añade eventos con título, categoría y fecha.
-- Filtra por exámenes, avisos o entregas; cada evento se puede editar o eliminar.
-- Pregunta a more por exámenes, parciales, avisos o entregas. El chat muestra las próximas fechas encontradas en la agenda.
+- Consulta los eventos en una lista ordenada por fecha, filtra por exámenes, avisos o entregas y edita o elimina cada evento.
+- Pregunta a more por exámenes, parciales, avisos o entregas; usa el botón de emoji del chat para añadir emojis a tus mensajes. El chat muestra las próximas fechas encontradas en la agenda.
 - Los eventos y el rol se guardan localmente en el navegador. Los datos no se sincronizan entre dispositivos.
 
 La agenda se inicializa con tres eventos de ejemplo para que los filtros y el chatbot se puedan probar de inmediato. Se pueden editar o eliminar como cualquier otro evento.

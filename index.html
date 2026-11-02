@@ -10,29 +10,163 @@
     <script src="app.js" defer></script>
   </head>
   <body>
-    <header class="topbar">
-      <a class="brand" href="#inicio" aria-label="Agenda personal, inicio">
-        <span class="brand-mark" aria-hidden="true">A.</span>
-        <span>agenda personal</span>
-      </a>
-      <div class="topbar-tools">
-        <span class="course-label"><span class="course-dot" aria-hidden="true"></span> Curso compartido</span>
-        <label class="role-control" for="role-select">Participas como
-          <select id="role-select" aria-label="Rol de usuario">
-            <option>Estudiante</option>
-            <option>Docente</option>
-            <option>Delegado/a</option>
-          </select>
-        </label>
-      </div>
-    </header>
+    <div class="app-shell">
+      <aside class="app-sidebar" aria-label="Navegación principal">
+        <a class="brand" href="#inicio" aria-label="Agenda personal, inicio">
+          <span class="brand-mark" aria-hidden="true">A.</span>
+          <span>agenda personal</span>
+        </a>
+        <span class="sidebar-section-label">ESPACIO DE TRABAJO</span>
+        <nav class="sidebar-nav" aria-label="Secciones">
+          <button class="nav-item is-active" type="button" data-view="agenda" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">▦</span> Agenda
+          </button>
+          <button class="nav-item" type="button" data-view="dashboard">
+            <span class="nav-icon" aria-hidden="true">▤</span> Dashboard
+          </button>
+          <button class="nav-item" type="button" data-view="classes">
+            <span class="nav-icon" aria-hidden="true">▣</span> Clases
+          </button>
+        </nav>
+        <div class="sidebar-course">
+          <span class="course-dot" aria-hidden="true"></span>
+          <span>Curso compartido</span>
+        </div>
+      </aside>
 
-    <main id="inicio" class="workspace">
+      <div class="app-content">
+        <header class="topbar">
+          <span class="topbar-page-label" id="topbar-page-label">Agenda del curso</span>
+          <div class="topbar-tools">
+            <label class="role-control" for="role-select">Participas como
+              <select id="role-select" aria-label="Rol de usuario">
+                <option>Estudiante</option>
+                <option>Docente</option>
+                <option>Delegado/a</option>
+              </select>
+            </label>
+          </div>
+        </header>
+
+        <main class="dashboard-view" id="dashboard-view" aria-labelledby="dashboard-title" hidden>
+          <section class="dashboard-welcome">
+            <div>
+              <p class="dashboard-eyebrow">ESPACIO DE TRABAJO <span aria-hidden="true">/</span> DASHBOARD</p>
+              <h1 id="dashboard-title">Welcome back</h1>
+              <p class="dashboard-intro">Todo lo que necesitas para organizar y acompañar a tu curso.</p>
+            </div>
+            <span class="dashboard-date" id="dashboard-date"></span>
+          </section>
+
+          <section class="quick-actions" aria-label="Accesos rápidos">
+            <button class="quick-action" id="dashboard-new-event" type="button">
+              <span class="quick-action-icon icon-orange" aria-hidden="true">＋</span>
+              <span><strong>Create new form</strong><small>Añade una fecha a la agenda</small></span>
+              <span class="quick-action-arrow" aria-hidden="true">↗</span>
+            </button>
+            <article class="quick-action">
+              <span class="quick-action-icon icon-blue" aria-hidden="true">◉</span>
+              <span><strong>Broadcast</strong><small>Comparte avisos con el curso</small></span>
+              <span class="quick-action-arrow" aria-hidden="true">↗</span>
+            </article>
+            <button class="quick-action" id="dashboard-open-chat" type="button">
+              <span class="quick-action-icon icon-violet" aria-hidden="true">⌕</span>
+              <span><strong>Chat</strong><small>Consulta fechas con more</small></span>
+              <span class="quick-action-arrow" aria-hidden="true">↗</span>
+            </button>
+            <article class="quick-action">
+              <span class="quick-action-icon icon-green" aria-hidden="true">⌘</span>
+              <span><strong>Integration</strong><small>Conecta tus herramientas</small></span>
+              <span class="quick-action-arrow" aria-hidden="true">↗</span>
+            </article>
+          </section>
+
+          <section class="dashboard-banner" aria-labelledby="banner-title">
+            <div class="banner-mark" aria-hidden="true">✳</div>
+            <div class="banner-copy">
+              <h2 id="banner-title">Tu curso, siempre en sintonía</h2>
+              <p>Organiza fechas importantes y mantén a todos al tanto desde un mismo lugar.</p>
+            </div>
+            <button class="banner-button" id="dashboard-banner-action" type="button">Añadir un evento <span aria-hidden="true">→</span></button>
+            <button class="banner-link" id="dashboard-banner-agenda" type="button">Ver agenda</button>
+          </section>
+
+          <section class="stats-section" aria-labelledby="stats-title">
+            <div class="dashboard-section-heading">
+              <div><h2 id="stats-title">Overview</h2><p>Uso y actividad del espacio</p></div>
+              <span class="stats-period">Todo el tiempo <span aria-hidden="true">⌄</span></span>
+            </div>
+            <div class="stats-grid">
+              <article class="stat-card">
+                <div class="stat-card-heading"><h3>Total Unique Users</h3><span class="info-mark" title="Métrica disponible al conectar analítica" aria-label="Métrica disponible al conectar analítica">i</span></div>
+                <strong class="stat-value">—</strong><p>Sin datos de analítica conectados</p>
+              </article>
+              <article class="stat-card">
+                <div class="stat-card-heading"><h3>Total Chatbot Sessions</h3><span class="info-mark" title="Métrica disponible al conectar analítica" aria-label="Métrica disponible al conectar analítica">i</span></div>
+                <strong class="stat-value">—</strong><p>Sin datos de analítica conectados</p>
+              </article>
+              <article class="stat-card">
+                <div class="stat-card-heading"><h3>Total Users Queries</h3><span class="info-mark" title="Métrica disponible al conectar analítica" aria-label="Métrica disponible al conectar analítica">i</span></div>
+                <strong class="stat-value">—</strong><p>Sin datos de analítica conectados</p>
+              </article>
+              <article class="stat-card">
+                <div class="stat-card-heading"><h3>First Contact Resolution</h3><span class="info-mark" title="Métrica disponible al conectar analítica" aria-label="Métrica disponible al conectar analítica">i</span></div>
+                <strong class="stat-value">—</strong><p>Sin datos de analítica conectados</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="resources-section" aria-labelledby="resources-title">
+            <div class="dashboard-section-heading">
+              <div><h2 id="resources-title">Resources</h2><p>Atajos para seguir organizando el curso</p></div>
+              <button class="all-resources" id="dashboard-resources-agenda" type="button">All Resources <span aria-hidden="true">→</span></button>
+            </div>
+            <div class="resources-grid">
+              <button class="resource-card" id="resource-agenda" type="button">
+                <span class="resource-icon icon-orange" aria-hidden="true">▦</span>
+                <span><strong>Agenda del curso</strong><small>Consulta y administra las próximas fechas.</small></span>
+                <span class="resource-arrow" aria-hidden="true">↗</span>
+              </button>
+              <button class="resource-card" id="resource-chat" type="button">
+                <span class="resource-icon icon-violet" aria-hidden="true">⌕</span>
+                <span><strong>Asistente more</strong><small>Encuentra exámenes, avisos y entregas.</small></span>
+                <span class="resource-arrow" aria-hidden="true">↗</span>
+              </button>
+              <button class="resource-card" id="resource-classes" type="button">
+                <span class="resource-icon icon-green" aria-hidden="true">▣</span>
+                <span><strong>Mis clases</strong><small>Administra tus clases, tengan avisos o no.</small></span>
+                <span class="resource-arrow" aria-hidden="true">↗</span>
+              </button>
+              <article class="resource-card">
+                <span class="resource-icon icon-blue" aria-hidden="true">ⓘ</span>
+                <span><strong>Guía del espacio</strong><small>Los datos se guardan en este dispositivo.</small></span>
+              </article>
+            </div>
+          </section>
+        </main>
+
+        <main class="classes-view" id="classes-view" aria-labelledby="classes-title" hidden>
+          <section class="classes-heading">
+            <div>
+              <p class="dashboard-eyebrow">ESPACIO DE TRABAJO <span aria-hidden="true">/</span> CLASES</p>
+              <h1 id="classes-title">Mis clases</h1>
+              <p class="classes-intro">Organiza todas tus clases en un solo lugar. Seguirán visibles aunque todavía no tengan avisos.</p>
+            </div>
+            <button class="class-add-button" id="open-class-dialog" type="button"><span aria-hidden="true">＋</span> Crear clase</button>
+          </section>
+          <div class="classes-summary"><span id="class-count">0 clases</span><span>Se guardan en este dispositivo</span></div>
+          <div class="class-grid" id="class-grid" aria-live="polite"></div>
+        </main>
+
+        <main id="inicio" class="workspace">
       <section class="agenda" aria-labelledby="agenda-title">
         <div class="page-heading">
-          <div>
-            <p class="eyebrow"><span id="today-label"></span><span class="eyebrow-divider">/</span> AGENDA DEL CURSO</p>
-            <h1 id="agenda-title">Lo que se viene <em>por delante.</em></h1>
+          <div class="page-heading-copy">
+            <p class="eyebrow">
+              <span class="heading-date"><span aria-hidden="true">✳</span><span id="today-label"></span></span>
+              <span class="heading-label">AGENDA DEL CURSO</span>
+            </p>
+            <h1 id="agenda-title"><span>Lo que se viene</span><em>por delante.</em></h1>
             <p class="intro">Fechas, avisos y entregas en un mismo lugar. Añade algo para que nadie se lo pierda.</p>
           </div>
           <button class="button button-primary add-event" id="open-dialog" type="button">
@@ -71,16 +205,39 @@
           <button type="button" data-prompt="¿Qué exámenes tenemos?">Exámenes</button>
           <button type="button" data-prompt="¿Hay entregas próximas?">Entregas</button>
         </div>
-        <form class="chat-form" id="chat-form">
-          <label class="visually-hidden" for="chat-input">Escribe tu consulta</label>
-          <input id="chat-input" name="message" type="text" placeholder="Pregunta por una fecha…" autocomplete="off" maxlength="240" required>
-          <button class="send-button" type="submit" aria-label="Enviar mensaje" title="Enviar mensaje"><span aria-hidden="true">↑</span></button>
-        </form>
+        <div class="chat-composer">
+          <form class="chat-form" id="chat-form">
+            <label class="visually-hidden" for="chat-input">Escribe tu consulta</label>
+            <input id="chat-input" name="message" type="text" placeholder="Pregunta por una fecha…" autocomplete="off" maxlength="240" required>
+            <button class="emoji-button" id="emoji-toggle" type="button" aria-label="Abrir selector de emojis" aria-expanded="false" aria-controls="emoji-picker" title="Agregar emoji">☺</button>
+            <button class="send-button" type="submit" aria-label="Enviar mensaje" title="Enviar mensaje"><span aria-hidden="true">↑</span></button>
+          </form>
+          <div class="emoji-picker" id="emoji-picker" role="group" aria-label="Elegir un emoji" hidden>
+            <button type="button" aria-label="Cara sonriente" title="Cara sonriente">😀</button>
+            <button type="button" aria-label="Cara alegre" title="Cara alegre">😃</button>
+            <button type="button" aria-label="Risa" title="Risa">😂</button>
+            <button type="button" aria-label="Cara enamorada" title="Cara enamorada">🥰</button>
+            <button type="button" aria-label="Cara con corazones" title="Cara con corazones">😍</button>
+            <button type="button" aria-label="Guiño" title="Guiño">😉</button>
+            <button type="button" aria-label="Pensando" title="Pensando">🤔</button>
+            <button type="button" aria-label="Celebración" title="Celebración">🎉</button>
+            <button type="button" aria-label="Aplausos" title="Aplausos">👏</button>
+            <button type="button" aria-label="Pulgar arriba" title="Pulgar arriba">👍</button>
+            <button type="button" aria-label="Corazón" title="Corazón">❤️</button>
+            <button type="button" aria-label="Brillos" title="Brillos">✨</button>
+            <button type="button" aria-label="Libro" title="Libro">📚</button>
+            <button type="button" aria-label="Lápiz y papel" title="Lápiz y papel">📝</button>
+            <button type="button" aria-label="Sol" title="Sol">☀️</button>
+          </div>
+          <span class="visually-hidden" id="emoji-status" role="status" aria-live="polite"></span>
+        </div>
         <p class="chat-footnote">Respuestas basadas en la agenda de este dispositivo</p>
       </aside>
     </main>
 
-    <footer class="page-footer"><span>Agenda personal <span class="footer-separator">/</span> AGENDA PARTICIPATIVA</span><span id="footer-event-total">0 eventos guardados</span></footer>
+        <footer class="page-footer"><span>Agenda personal <span class="footer-separator">/</span> AGENDA PARTICIPATIVA</span><span id="footer-event-total">0 eventos guardados</span></footer>
+      </div>
+    </div>
 
     <dialog class="event-dialog" id="event-dialog" aria-labelledby="dialog-title">
       <form id="event-form" method="dialog">
@@ -111,6 +268,26 @@
         <div class="dialog-actions">
           <button class="button button-quiet" id="cancel-dialog" type="button">Cancelar</button>
           <button class="button button-primary" id="save-event" type="submit">Guardar evento <span aria-hidden="true">→</span></button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog class="event-dialog class-dialog" id="class-dialog" aria-labelledby="class-dialog-title">
+      <form id="class-form">
+        <div class="dialog-heading">
+          <div><p class="eyebrow">MIS CLASES</p><h2 id="class-dialog-title">Crear clase</h2></div>
+          <button class="icon-button" id="close-class-dialog" type="button" aria-label="Cerrar formulario">×</button>
+        </div>
+        <input id="class-id" name="id" type="hidden">
+        <label class="field-label" for="class-name">Nombre de la clase</label>
+        <input class="form-input" id="class-name" name="name" type="text" placeholder="Ej. Matemática" maxlength="70" required>
+        <label class="field-label" for="class-subject">Materia o sección <span class="optional-label">OPCIONAL</span></label>
+        <input class="form-input" id="class-subject" name="subject" type="text" placeholder="Ej. 2.º año · Turno mañana" maxlength="70">
+        <label class="field-label" for="class-teacher">Docente <span class="optional-label">OPCIONAL</span></label>
+        <input class="form-input" id="class-teacher" name="teacher" type="text" placeholder="Nombre del docente" maxlength="70">
+        <div class="dialog-actions">
+          <button class="button button-quiet" id="cancel-class-dialog" type="button">Cancelar</button>
+          <button class="button button-primary" id="save-class" type="submit">Guardar clase <span aria-hidden="true">→</span></button>
         </div>
       </form>
     </dialog>
